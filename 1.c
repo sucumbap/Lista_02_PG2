@@ -28,4 +28,12 @@ int wordSplit( char *str, int (*proc)( char *word, void *context ),void *context
    }
 
 }
-int wordPrint( char *word, void *context );
+
+int wordPrint( char *word, void *context ) {
+    while(word!=context){
+        printf("%u",*word);
+        word++;
+    }
+    return 1;
+}
+
