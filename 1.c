@@ -45,7 +45,45 @@ int main () {
    return(0);
 }
 
-int wordStore( char *word, void *context );
+// This function is going to be passed trought the proc argumente of the wordSplit function
+// It will be used to store the words in the DataStore struct
+// It will add the word to the struct whitch is passed as the argument context
+// If the struct capacity is reached it will use the function stderr to print an error message
+// It returns 1 if the word was added to the struct and 0 if the struct capacity was reached or the word was already in the struct
+int wordStore( char *word, void *context ) {
+   DataStore *data = (DataStore *)context;
+   if (data->count == MAX_WORD_COUNT){
+      fprintf(stderr, "Error: The struct capacity is reached");
+      return 0;
+   }
+   for (int i = 0; i < data->count; i++){
+      if (strcmp(data->words[i], word) == 0){
+         return 0;
+      }
+   }
+   strcpy(data->words[data->count], word);
+   data->count++;
+   return 1;
+}
+// This function is going to be passed trought the qsort function and bsearch function
+// It will be used to compare the words in the words array on a dataStore struct
+// It will use strcoll to compare the words by their alphabetical order
+// It returns an integer less than, equal to, or greater than zero if the first argument is found, respectively, to be less than, to match, or be greater than the second.
+int dataComp( const void *a, const void *b ) {
+   DataStore *data = (DataStore *)a;
+   char *word = (char *)b;
+   return strcoll(data->words, word);
+}
+
+// This function is going to call qsort with dataComp to sort the words array in the dataStore struct
+void dataSort( DataStore *data ) {
+   qsort(data->words, data->count, MAX_WORD_SIZE, dataComp);
+}
+// This function is going to call bsearch with dataComp to search for a word in the words array in the dataStore struct
+// It returns a pointer to the matching element of the array if the word is found and NULL if the word is not found
+char *dataSearch( DataStore *data, const char *sample ) {
+   return bsearch(sample, data->words, data->count, MAX_WORD_SIZE, dataComp);
+}
 
 
 int wordSplit( char *str, int (*proc)( char *word, void *context ),void *context ) {
