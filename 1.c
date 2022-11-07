@@ -69,10 +69,11 @@ int wordStore( char *word, void *context ) {
 // It will be used to compare the words in the words array on a dataStore struct
 // It will use strcoll to compare the words by their alphabetical order
 // It returns an integer less than, equal to, or greater than zero if the first argument is found, respectively, to be less than, to match, or be greater than the second.
+// There should be no pointer incompatilability because the function is passed trought the qsort and bsearch functions
 int dataComp( const void *a, const void *b ) {
-   DataStore *data = (DataStore *)a;
-   char *word = (char *)b;
-   return strcoll(data->words, word);
+   char *word1 = (char *)a;
+   char *word2 = (char *)b;
+   return strcoll(word1, word2);
 }
 
 // This function is going to call qsort with dataComp to sort the words array in the dataStore struct
